@@ -17,6 +17,7 @@ void idt_set_vector(uint16_t vec, void* isr, uint32_t flags) {
     idt[vec].dpl = 3;
     idt[vec].p = 1;
     idt[vec].reserved = 0;
+    idt[vec].type = flags;
 }
 
 

@@ -45,3 +45,5 @@ struct __attribute__((packed)) InterruptStackFrame {
 
 void idt_set_vector(uint16_t vec, void* isr, uint32_t flags);
 void idt_install(void);
+
+#endif
