@@ -1,5 +1,6 @@
 #include <debug/log.h>
 #include <arch/memory/memory.h>
+#include <arch/memory/gdt.h>
 #include <drivers/video/FrameBuffer.h>
 
 canvas_t canvas = {
@@ -11,12 +12,13 @@ canvas_t canvas = {
 
 uint8_t gLegacyModeEnabled = 0;
 
+
 void log(const char* format, STATUS status, ...) {
   va_list ptr;
 
   size_t args = 0;
 
-  for (int i = 0; i < strlen(format); ++i) {
+  for (size_t i = 0; i < strlen(format); ++i) {
     if (format[i] == '%') {
       switch (format[i + 1]) {
       case 's':
@@ -34,7 +36,7 @@ void log(const char* format, STATUS status, ...) {
   status += args;
   va_start(ptr, status);
 
-  int color = 0xFFFFFF;
+  int color = 0xFFEA00;
 
   switch (s) {
   case S_WARNING:
@@ -42,7 +44,7 @@ void log(const char* format, STATUS status, ...) {
     kwrite(&canvas, "[WARNING] ", color);
     break;
   case S_INFO:
-    color = 0x00FF00;
+    color = 0xFFEA00;
     kwrite(&canvas, "[INFO] ", color);
     break;
   case S_PANIC:
@@ -55,14 +57,14 @@ void log(const char* format, STATUS status, ...) {
     break;
   }
 
-  for (int i = 0; i < strlen(format); ++i) {
+  for (size_t i = 0; i < strlen(format); ++i) {
     if (format[i] == '%') {
       switch (format[i + 1]) {
       case 's':
         {
           const char* arg = va_arg(ptr, const char*);
 
-          for (int j = 0; j < strlen(arg); ++j) {
+          for (size_t j = 0; j < strlen(arg); ++j) {
             char terminated[2] = {arg[j], 0x0};
             kwrite(&canvas, terminated, color);
           }
@@ -83,7 +85,7 @@ void log(const char* format, STATUS status, ...) {
       case 'x':
         {
           int arg = va_arg(ptr, int);
-          kwrite(&canvas, hex2str(arg), color);
+          kwrite(&canvas, (char*)hex2str(arg), color);
           ++i;
           continue;
         }
@@ -96,14 +98,22 @@ void log(const char* format, STATUS status, ...) {
 }
 
 
+static void init(void) {
+    gdt_load();
+    log("GDT loaded.\n", S_INFO);
+}
+
+
 int _start(framebuffer_t* lfb, psf1_font_t* font, meminfo_t meminfo, void* rsdp, uint8_t legacy_mode) {
+  (void)meminfo;
+  (void)rsdp;
   canvas.font = font;
   canvas.lfb = lfb;
   gLegacyModeEnabled = legacy_mode;
 
-	log("Hello, World!\n", S_INFO);
+  init();
 
   while (1) {
-    __asm__ __volatile__("cli; hlt");
+    __asm__ __volatile__("hlt");
   }
 }

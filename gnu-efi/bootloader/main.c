@@ -6,7 +6,7 @@
 #define PSF1_MAGIC0 0x00000036
 #define PSF1_MAGIC1 0x00000004
 
-#define BACKGROUND_COLOR 0x0000FF
+#define BACKGROUND_COLOR 0x808080
 #define TOP_TEXT "KessBoot v1.4 -- use up/down arrows to move and right arrow to select. Or left arrow for legacy support."
 
 typedef struct {
