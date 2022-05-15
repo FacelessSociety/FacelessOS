@@ -2,9 +2,12 @@
 #include <arch/memory/memory.h>
 #include <arch/memory/vmm.h>
 #include <arch/memory/gdt.h>
+#include <arch/io/io.h>
+#include <arch/io/legacypic.h>
 #include <interrupts/IDT.h>
 #include <interrupts/exceptions.h>
 #include <drivers/video/FrameBuffer.h>
+#include <util/asm.h>
 
 canvas_t canvas = {
     .x = 0,
@@ -100,6 +103,12 @@ void log(const char* format, STATUS status, ...) {
   }
 }
 
+__attribute__((interrupt)) static void irq1_handler(struct InterruptStackFrame*) {
+    log("Keyboard has sent IRQ 1.\n", S_INFO);
+    inportb(0x60);
+    PIC_sendEOI(1);
+}
+
 
 static void init(meminfo_t meminfo) {
     gdt_load();
@@ -120,12 +129,18 @@ static void init(meminfo_t meminfo) {
     }
 
     // By binded I mean broken up into bits and placed into an IDT Gate Descriptor struct.
-    log("Exception handlers binded.\n", S_INFO);
+    log("Exception handlers binded.\n", S_INFO); 
+
+    idt_set_vector(0x21, irq1_handler, INT_GATE_FLAGS);  
+    log("Initialized non exceptions.\n", S_INFO);
     idt_install();
     log("IDTR loaded with IDT offset.\n", S_INFO);
-    vmm_init(meminfo);
-    log("VMM is setup.\n", S_INFO);
+    
+    init_pic();
+    outportb(PIC1_DATA, 0xFF & ~(1 << 1));
 
+    vmm_init(meminfo);
+    log("VMM initialized.\n", S_INFO); 
 }
 
 
@@ -136,8 +151,11 @@ int _start(framebuffer_t* lfb, psf1_font_t* font, meminfo_t meminfo, void* rsdp,
   gLegacyModeEnabled = legacy_mode;
 
   init(meminfo);
+  log("Finished initializing subsystems.\n", S_INFO);
+
+  STI;
 
   while (1) {
-    __asm__ __volatile__("hlt");
+    HLT;
   }
 }
