@@ -1,6 +1,8 @@
 #include <debug/log.h>
 #include <arch/memory/memory.h>
 #include <arch/memory/gdt.h>
+#include <interrupts/IDT.h>
+#include <interrupts/exceptions.h>
 #include <drivers/video/FrameBuffer.h>
 
 canvas_t canvas = {
@@ -101,6 +103,26 @@ void log(const char* format, STATUS status, ...) {
 static void init(void) {
     gdt_load();
     log("GDT loaded.\n", S_INFO);
+   
+    // Exceptions.
+    for (int i = 0x0; i <= 0xE; ++i) {
+        // Reserved exceptions or just ones we don't need.
+        switch (i) {
+            case 0x1:
+            case 0x2:
+            case 0x3:
+            case 0x9:
+                continue;
+        }
+
+        idt_set_vector(i, exceptions[i], TRAP_GATE_FLAGS);
+    }
+
+    // By binded I mean broken up into bits and placed into an IDT Gate Descriptor struct.
+    log("Exception handlers binded.\n", S_INFO);
+    idt_install();
+    log("IDTR loaded with IDT offset.\n", S_INFO);
+
 }
 
 

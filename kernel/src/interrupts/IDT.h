@@ -11,6 +11,10 @@
 #define IDT_INT_GATE_USER 0xEE
 
 
+void idt_set_vector(uint16_t vec, void* isr, uint32_t flags);
+void idt_install(void);
+
+
 struct IDTGateDescriptor {
     uint16_t isr_low16;
     uint16_t cs;
@@ -41,9 +45,5 @@ struct __attribute__((packed)) InterruptStackFrame {
     uint64_t rsp;
     uint64_t ss;
 };
-
-
-void idt_set_vector(uint16_t vec, void* isr, uint32_t flags);
-void idt_install(void);
 
 #endif
