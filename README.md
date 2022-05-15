@@ -1,3 +1,3 @@
-## Faceless OS.
+# Faceless OS.
 
-# An OS for the faceless.
+## An OS for the faceless.
