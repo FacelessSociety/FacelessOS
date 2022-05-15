@@ -10,7 +10,7 @@
 #define GB 0x40000000UL
 
 
-static struct __attribute__((packed)) MappingTable {
+__attribute__((aligned(0x1000))) static struct MappingTable {
     uint64_t entries[512];
 } pml4;
 
@@ -111,7 +111,7 @@ void load_pml4(void* pml4);
 
 void vmm_init(meminfo_t meminfo) {
     memzero(&pml4, PAGE_SIZE);
-    log("<VMM>: PML4 zeroed\n", S_INFO);
+    log("<VMM>: PML4 zeroed.\n", S_INFO);
 
     set_placement(meminfo);
     log("<VMM>: Placement set.\n", S_INFO);
@@ -119,7 +119,7 @@ void vmm_init(meminfo_t meminfo) {
     if (placement == 0xDEADBEEF)
         panic("NO MEMORY LEFT!\n");
 
-    for (uint64_t i = 0; i < GB*6; i += PAGE_SIZE) {
+    for (uint64_t i = 0; i < GB*20; i += PAGE_SIZE) {
         map_page(i, VMM_P_PRESENT | VMM_RW_WRITABLE);
     }
 
