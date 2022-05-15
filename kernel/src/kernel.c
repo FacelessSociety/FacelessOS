@@ -1,5 +1,6 @@
 #include <debug/log.h>
 #include <arch/memory/memory.h>
+#include <arch/memory/vmm.h>
 #include <arch/memory/gdt.h>
 #include <interrupts/IDT.h>
 #include <interrupts/exceptions.h>
@@ -100,7 +101,7 @@ void log(const char* format, STATUS status, ...) {
 }
 
 
-static void init(void) {
+static void init(meminfo_t meminfo) {
     gdt_load();
     log("GDT loaded.\n", S_INFO);
    
@@ -122,18 +123,19 @@ static void init(void) {
     log("Exception handlers binded.\n", S_INFO);
     idt_install();
     log("IDTR loaded with IDT offset.\n", S_INFO);
+    vmm_init(meminfo);
+    log("VMM is setup.\n", S_INFO);
 
 }
 
 
 int _start(framebuffer_t* lfb, psf1_font_t* font, meminfo_t meminfo, void* rsdp, uint8_t legacy_mode) {
-  (void)meminfo;
   (void)rsdp;
   canvas.font = font;
   canvas.lfb = lfb;
   gLegacyModeEnabled = legacy_mode;
 
-  init();
+  init(meminfo);
 
   while (1) {
     __asm__ __volatile__("hlt");
