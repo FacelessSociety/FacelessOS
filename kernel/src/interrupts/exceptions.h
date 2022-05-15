@@ -17,6 +17,7 @@ void segment_not_present(void);
 void stack_segfault(void);
 void general_protection(void);
 void page_fault(void);
+void panic(const char* panic_msg);
 
 // A nice array of exception handler pointers so
 // we can just iterate over them and made things
