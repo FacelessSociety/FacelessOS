@@ -48,7 +48,7 @@ static void set_placement(meminfo_t meminfo) {
 }
 
 
-static inline uint64_t alloc_frame_internel(void) {
+static inline uint64_t alloc_frame_internal(void) {
     uint64_t addr = placement;
 
     if (pages_left == 0)
@@ -71,7 +71,7 @@ void map_page(uint64_t logical, uint32_t flags) {
 
     // There is no PDPT defined at this index yet.
     if (!(pml4.entries[pml4_idx] & VMM_P_PRESENT)) {
-        uint64_t pdpt_frame = alloc_frame_internel();           // Allocate a frame.
+        uint64_t pdpt_frame = alloc_frame_internal();           // Allocate a frame.
         memzero((void*)pdpt_frame, PAGE_SIZE);                  // Zero it.
         pml4.entries[pml4_idx] = (pdpt_frame & PAGE_ADDR_MASK) | flags;
         map_page(pdpt_frame, flags);
@@ -81,7 +81,7 @@ void map_page(uint64_t logical, uint32_t flags) {
 
     // No page directory at this index.
     if (!(pdpt->entries[pdpt_idx] & VMM_P_PRESENT)) {
-        uint64_t pd_frame = alloc_frame_internel();
+        uint64_t pd_frame = alloc_frame_internal();
         memzero((void*)pd_frame, PAGE_SIZE);
         pdpt->entries[pdpt_idx] = (pd_frame & PAGE_ADDR_MASK) | flags;
         map_page(pd_frame, flags);
@@ -91,7 +91,7 @@ void map_page(uint64_t logical, uint32_t flags) {
 
     // No page table for this index.
     if (!(pd->entries[pd_idx] & VMM_P_PRESENT)) {
-        uint64_t pt_frame = alloc_frame_internel();
+        uint64_t pt_frame = alloc_frame_internal();
         memzero((void*)pt_frame, PAGE_SIZE);
         pd->entries[pd_idx] = (pt_frame & PAGE_ADDR_MASK) | flags;
         map_page(pt_frame, flags);
