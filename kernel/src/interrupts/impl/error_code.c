@@ -30,6 +30,9 @@ void dump_exception_log(struct InterruptStackFrame* stackframe, uint8_t vector) 
         case 0x7:
             LOG("Device Not Available.\n");
             break;
+        case 0x8:
+            LOG("Double Fault.\n");
+            break;
         case 0xA:
             LOG("Invalid Task State Segment.\n");
             break;
