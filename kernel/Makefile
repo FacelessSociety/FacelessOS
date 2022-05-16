@@ -20,6 +20,7 @@ SRC = $(call rwildcard,$(SRCDIR),*.c)
 ASMSRC = $(call rwildcard,$(SRCDIR),*.asm)
 OBJS = $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRC))
 OBJS += $(patsubst $(SRCDIR)/%.asm, $(OBJDIR)/%.asm.o, $(ASMSRC))
+OBJS += $(call rwildcard,$(OBJDIR)/userspace,*.o)
 DIRS = $(wildcard $(SRCDIR)/*)
 
 kernel: $(OBJS) link

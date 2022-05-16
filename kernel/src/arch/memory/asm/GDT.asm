@@ -48,6 +48,8 @@ GDT:
 GDT_TSS: dq 0
 
 gdt_load:
+    mov rax, TSS                ;; Move address of TSS descriptor into RAX.
+    mov [GDT_TSS], rax          ;; Move value of RAX into GDT_TSS so we can modify the TSS descriptor from C.
     lgdt [Pointer]              ;; Load GDT via pointer.
     mov ax, 0x10                ;; Set AX to GDT data selector.
     mov ds, ax                  ;; Set DS to data selector.

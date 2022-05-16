@@ -16,5 +16,7 @@ typedef enum {
 
 void vmm_init(meminfo_t meminfo);
 void map_page(uint64_t logical, uint32_t flags);
+void unmap_page(uint64_t logical);
+void* kalloc_page(uint32_t flags);
 
 #endif

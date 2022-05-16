@@ -105,6 +105,36 @@ void map_page(uint64_t logical, uint32_t flags) {
 }
 
 
+void unmap_page(uint64_t logical) {
+    if (logical % 0x1000 != 0) return;
+
+    // Grab indices from logical address.
+    uint64_t pml4_idx = (logical >> 39) & 0x1FF;
+    uint64_t pdpt_idx = (logical >> 30) & 0x1FF;
+    uint64_t pd_idx = (logical >> 21) & 0x1FF;
+    uint64_t pt_idx = (logical >> 12) & 0x1FF;
+
+    struct MappingTable* pdpt = (struct MappingTable*)(pml4.entries[pml4_idx] & PAGE_ADDR_MASK);
+    struct MappingTable* pd = (struct MappingTable*)(pdpt->entries[pdpt_idx] & PAGE_ADDR_MASK);
+    struct MappingTable* pt = (struct MappingTable*)(pd->entries[pd_idx] & PAGE_ADDR_MASK);
+
+    if (!(pt->entries[pt_idx] & VMM_P_PRESENT))
+        pt->entries[pt_idx] = (logical & PAGE_ADDR_MASK);
+
+    // Evict the page from the Translation Look Aside Buffer. Bye bye! >:)
+    __asm__ __volatile__("invlpg (%0)" :: "r" (logical));
+}
+
+
+
+void* kalloc_page(uint32_t flags) {
+    uint64_t addr = alloc_frame_internal();
+    unmap_page(addr);
+    map_page(addr, flags);
+    return (void*)addr;
+}
+
+
 // Implemented in PML4.asm 
 void load_pml4(void* pml4);
 
@@ -120,7 +150,7 @@ void vmm_init(meminfo_t meminfo) {
         panic("NO MEMORY LEFT!\n");
 
     for (uint64_t i = 0; i < GB*20; i += PAGE_SIZE) {
-        map_page(i, VMM_P_PRESENT | VMM_RW_WRITABLE);
+        map_page(i, VMM_P_PRESENT | VMM_RW_WRITABLE | VMM_US_USER);
     }
 
     log("<VMM>: Kernel address space has been mapped.\n", S_INFO);
