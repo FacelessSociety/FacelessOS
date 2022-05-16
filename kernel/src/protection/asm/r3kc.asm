@@ -10,34 +10,28 @@
 
 bits 64
 global r3kc_exec_callback
+extern PIC_sendEOI
 
 ;; <=== Args ===>
 ;; ARG0: CALLBACK_ADDRESS
 ;; OPARG1: OPTIONAL INFORMATION TO BRING TO USERSPACE ROUTINE (MAX SIZE: DWORD).
 r3kc_exec_callback:
-    mov [LOGICAL_CALLBACK_ADDRESS], rdi         ;; PRESERVE ARG0.
-    mov [OPARG1], rsi                           ;; PRESERVE OPARG1.
-    leave                                       ;; ENSURE THERE IS NO STACK FRAME FROM C.
+    leave
 
     ;; THERE WILL BE AN IRET STACK-FRAME ON THE STACK.
     ;; THE RETURN ADDRESS IS ON THE TOP OF THE STACK,
     ;; WE WILL MODIFY THAT TO CHANGE THE INSTRUCTION
     ;; POINTER TO THE CALLBACK OFFSET.
-
-    mov rdi, [LOGICAL_CALLBACK_ADDRESS]
     mov [rsp], rdi
 
     ;; NOTE: OPARG1 IS RETURNED IN RAX,
     ;; USERSPACE ROUTINE MUST CHECK RAX FOR THE ARGUMENT.
+    mov rax, rsi
 
-    mov rax, [OPARG1]
-
-    ;; IN THE CASE THAT A ROUTINE WAS TO HANDLE
-    ;; AND IRQ FROM PIC, WE WILL SEND AN END OF INTERRUPT
-    ;; TO I/O PORT 0x20.
-
-    mov ax, 0x20
-    out 0x20, ax
+    ;; SEND EOI (END OF INTERRUPT) TO PIC IN CASE
+    ;; IN CASE THE ORIGIN OF INTERRUPT WAS AN IRQ.
+    mov rdi, 1
+    call PIC_sendEOI
 
     ;; PERFORM AN IRETQ.
     iretq
