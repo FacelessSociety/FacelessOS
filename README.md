@@ -4,15 +4,6 @@
 
 ### Baremetal Commands
 
-reboot        | Reboots machine.
-------------  | -------------
-clear         | Clears screen.
-------------  | -------------
-date          | Fetches the date.
-------------  | -------------
-echo string   | Echos back whatever string is.
-------------  | -------------
-
 ```
 reboot          [Reboots system]
 clear           [Clears screen]
