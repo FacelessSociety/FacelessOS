@@ -6,7 +6,9 @@
 typedef enum {
     CT_ECHO,
     CT_REBOOT,
-    CT_INVALID
+    CT_DATE,
+    CT_INVALID,
+    CT_NONE
 } SHELL_COMMAND_TYPE;
 
 

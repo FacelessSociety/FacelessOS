@@ -61,6 +61,8 @@ static struct Command cmd_op_sep(char* buffer) {
         cmd.command = CT_ECHO;
     else if (strncmp(command, "reboot", strlen(command)))
         cmd.command = CT_REBOOT;
+    else if (strncmp(command, "date", strlen(command)))
+        cmd.command = CT_DATE;
     else
         cmd.command = CT_INVALID;
 

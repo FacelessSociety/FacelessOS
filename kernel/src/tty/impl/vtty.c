@@ -58,3 +58,10 @@ void vtty_pop(void) {
 uint8_t vtty_initialized(void) {
     return initialized;
 }
+
+
+void vtty_feed_bulk(char* c) {
+    for (size_t i = 0; i < strlen(c); ++i) {
+        vtty_feed(c[i]);
+    }
+}
