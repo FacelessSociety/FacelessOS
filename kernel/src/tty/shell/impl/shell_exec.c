@@ -2,11 +2,14 @@
 #include <tty/vtty.h>
 #include <debug/log.h>
 #include <util/string.h>
+#include <util/baremetal_style.h>
 #include <drivers/ps2/Controller.h>
 #include <drivers/rtc/rtc.h>
+#include <drivers/video/FrameBuffer.h>
 
 // 2022 Ian Moffett <ian@kesscoin.com>
 
+extern canvas_t canvas;
 
 
 void shell_exec(struct Command command) {
@@ -25,5 +28,8 @@ void shell_exec(struct Command command) {
         vtty_feed('/');
         vtty_feed_bulk(dec2str(datetime.year));
         vtty_feed(' ');
+    } else if (command.command == CT_CLEAR) {
+        clearScreen(&canvas, BG_COLOR);
+        log(VTTY_PROMPT, -1);
     }
 }
