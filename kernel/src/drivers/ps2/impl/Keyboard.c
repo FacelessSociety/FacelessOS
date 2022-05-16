@@ -29,7 +29,10 @@ __attribute__((interrupt)) void ps2_irq1_response(struct InterruptStackFrame*) {
         vtty_feed(ch);          // Feed character into virtual TTY.
     } else if (ch == '\x08') {      // Backspace.
         vtty_pop();
+    } else if (scancode == 28) {    // Enter.
+        vtty_submit_command();
     }
+
 
 
     PIC_sendEOI(1);
