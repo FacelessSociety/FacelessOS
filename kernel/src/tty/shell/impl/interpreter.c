@@ -8,6 +8,8 @@
 
 #define WORD_END(C) (C == ' ' || C == '\0')
 #define MAX_KW_SIZE 15                          // Max keyword length.
+#define MAX_OPERAND_SIZE 30
+
 
 // NOTE: Re-calling will overwrite string.
 // @step_from goes like this:
@@ -30,17 +32,17 @@ static char* get_command(char* str) {
 static char* get_operand(char* str) {
     size_t index_continue = 0;
     size_t word_idx = 0;
-    static char word[MAX_KW_SIZE + 1];
-    memzero(word, MAX_KW_SIZE + 1);
+    static char word[MAX_OPERAND_SIZE + 1];
+    memzero(word, MAX_OPERAND_SIZE + 1);
 
-    for (size_t i = 0; i < strlen(str) && i < MAX_KW_SIZE; ++i) {
+    for (size_t i = 0; i < strlen(str); ++i) {
         if (str[i] == ' ') {
             index_continue = i + 1;
             break;
         }
     }
 
-    for (size_t i = index_continue; i < strlen(str) && i < MAX_KW_SIZE && str[i] != '\0'; ++i) {
+    for (size_t i = index_continue; i < strlen(str) && i < MAX_OPERAND_SIZE && str[i] != '\0'; ++i) {
         word[word_idx++] = str[i];
     }
 
