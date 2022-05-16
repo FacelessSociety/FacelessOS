@@ -3,6 +3,12 @@ all:
 	mkdir -p kernel/lib/proc/asm
 	mkdir -p kernel/lib/interrupts/asm kernel/lib/interrupts/sycall kernel/lib/interrupts/syscall/asm
 	mkdir -p kernel/lib/drivers/ps2/asm
+	mkdir -p kernel/lib/protection
+	mkdir -p kernel/lib/protection/asm
+	mkdir -p kernel/lib/userspace
+	mkdir -p kernel/lib/proc kernel/lib/proc/asm
+	bash builduserspace.sh
+	mv *.o kernel/lib/userspace/
 	cd gnu-efi/; make; make bootloader; cd ../; cd kernel; make; make buildimg
 
 run:
