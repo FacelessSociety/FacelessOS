@@ -11,6 +11,7 @@
 void vtty_init(void);
 void vtty_feed(char c);
 void vtty_pop(void);
+void vtty_submit_command(void);
 uint8_t vtty_initialized(void);
 
 #endif
