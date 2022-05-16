@@ -14,12 +14,13 @@ static uint16_t buffer_idx = 0;
 
 void vtty_init(void) {
     initialized = 1;
+    buffer_idx = 0;
     log("\n%s", -1, VTTY_PROMPT);
 }
 
 
 void vtty_feed(char c) {
-    if (buffer_idx >= MAX_BUFFER_SZ) return;
+    if (buffer_idx >= MAX_BUFFER_SZ - 1) return;
 
     buffer[buffer_idx++] = c;
     char terminated_ch[2] = {c, 0x0};
@@ -28,6 +29,9 @@ void vtty_feed(char c) {
 
 
 void vtty_pop(void) {
+    if (buffer_idx == 0) return;
+
+
     extern canvas_t canvas;
     canvas.x -= 8;
     draw_square(canvas, canvas.x, canvas.y, 15, 15, 0x000000);
