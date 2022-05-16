@@ -6,7 +6,9 @@
 #include <arch/io/legacypic.h>
 #include <interrupts/IDT.h>
 #include <interrupts/exceptions.h>
+#include <interrupts/syscall/syscall.h>
 #include <drivers/video/FrameBuffer.h>
+#include <drivers/ps2/Keyboard.h>
 #include <util/asm.h>
 #include <protection/switch2userspace.h>
 #include <proc/TSS.h>
@@ -105,12 +107,6 @@ void log(const char* format, STATUS status, ...) {
   }
 }
 
-__attribute__((interrupt)) static void irq1_handler(struct InterruptStackFrame*) {
-    log("Keyboard has sent IRQ 1.\n", S_INFO);
-    inportb(0x60);
-    PIC_sendEOI(1);
-}
-
 
 static void init(meminfo_t meminfo) {
     gdt_load();
@@ -133,7 +129,8 @@ static void init(meminfo_t meminfo) {
     // By binded I mean broken up into bits and placed into an IDT Gate Descriptor struct.
     log("Exception handlers binded.\n", S_INFO); 
 
-    idt_set_vector(0x21, irq1_handler, INT_GATE_FLAGS);  
+    idt_set_vector(0x21, ps2_irq1_response, INT_GATE_FLAGS);
+    idt_set_vector(0x80, syscall_entry, IDT_INT_GATE_USER);
     log("Initialized non exceptions.\n", S_INFO);
     idt_install();
     log("IDTR loaded with IDT offset.\n", S_INFO);
