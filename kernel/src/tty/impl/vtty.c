@@ -50,7 +50,7 @@ void vtty_submit_command(void) {
 void vtty_pop(void) {
     if (buffer_idx == 0) return;
     canvas.x -= 8;
-    draw_square(canvas, canvas.x, canvas.y, 15, 15, 0x000000);
+    draw_square(canvas, canvas.x, canvas.y, 50, 50, 0x000000);
     buffer[--buffer_idx] = '\0';
 }
 
