@@ -18,6 +18,7 @@
 //    0     1   2  3   4
 static char* get_command(char* str) {
     static char word[MAX_KW_SIZE];
+    memzero(word, MAX_OPERAND_SIZE + 1);
     word[0] = '\0';
 
     for (size_t i = 0; i < strlen(str) && i < MAX_KW_SIZE; ++i) {
@@ -56,9 +57,9 @@ static struct Command cmd_op_sep(char* buffer) {
     char* operand = get_operand(buffer);
     struct Command cmd;
 
-    if (strncmp(command, "echo", strlen("echo")))
+    if (strncmp(command, "echo", strlen(command)))
         cmd.command = CT_ECHO;
-    else if (strncmp(command, "reboot", strlen("reboot")))
+    else if (strncmp(command, "reboot", strlen(command)))
         cmd.command = CT_REBOOT;
     else
         cmd.command = CT_INVALID;
