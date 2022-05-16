@@ -19,6 +19,13 @@ static void sys_test(void) {
 }
 
 
+/*
+ *  ARGS:
+ *
+ *  R15: Hook callback pointer.
+ *
+ */
+
 static void sys_ui_init(void) {
     ps2_keyb_hook_ui((void*)regs->r15);
 }
