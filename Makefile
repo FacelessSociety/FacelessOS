@@ -7,6 +7,7 @@ all:
 	mkdir -p kernel/lib/protection/asm
 	mkdir -p kernel/lib/userspace
 	mkdir -p kernel/lib/proc kernel/lib/proc/asm
+	mkdir -p kernel/lib/interrupts/syscall kernel/lib/interrupts/syscall/asm
 	bash builduserspace.sh
 	mv *.o kernel/lib/userspace/
 	cd gnu-efi/; make; make bootloader; cd ../; cd kernel; make; make buildimg
