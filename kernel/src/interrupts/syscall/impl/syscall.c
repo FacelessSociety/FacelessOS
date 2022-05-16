@@ -2,7 +2,7 @@
 #include <debug/log.h>
 #include <drivers/ps2/Keyboard.h>
 
-#define SYSCALL_COUNT 2
+#define SYSCALL_COUNT 1
 
 static volatile struct SyscallRegs {
     uint64_t r15;
@@ -19,23 +19,9 @@ static void sys_test(void) {
 }
 
 
-/*
- *  ARGS:
- *
- *  R15: Hook callback pointer.
- *
- */
-
-static void sys_ui_init(void) {
-    ps2_keyb_hook_ui((void*)regs->r15);
-}
-
-
-
 // An array of syscall functions.
 static void(*syscall_table[SYSCALL_COUNT])(void) = {
     sys_test,
-    sys_ui_init
 };
 
 

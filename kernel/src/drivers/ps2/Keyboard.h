@@ -7,6 +7,5 @@
 
 
 __attribute__((interrupt)) void ps2_irq1_response(struct InterruptStackFrame*);
-void ps2_keyb_hook_ui(void* routine);
 
 #endif

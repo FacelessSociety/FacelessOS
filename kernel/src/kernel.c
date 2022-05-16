@@ -12,6 +12,7 @@
 #include <util/asm.h>
 #include <protection/switch2userspace.h>
 #include <proc/TSS.h>
+#include <tty/vtty.h>
 
 canvas_t canvas = {
     .x = 0,
@@ -153,6 +154,7 @@ int _start(framebuffer_t* lfb, psf1_font_t* font, meminfo_t meminfo, void* rsdp,
 
   init(meminfo);
   log("Finished initializing subsystems.\n", S_INFO);
+  vtty_init();
 
   STI;
 
