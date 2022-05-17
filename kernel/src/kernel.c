@@ -9,6 +9,7 @@
 #include <interrupts/syscall/syscall.h>
 #include <drivers/video/FrameBuffer.h>
 #include <drivers/ps2/Keyboard.h>
+#include <drivers/audio/pcspkr.h>
 #include <util/asm.h>
 #include <protection/switch2userspace.h>
 #include <proc/TSS.h>
@@ -155,7 +156,7 @@ int _start(framebuffer_t* lfb, psf1_font_t* font, meminfo_t meminfo, void* rsdp,
   log("Finished initializing subsystems.\n", S_INFO);
 
   STI;
-
+    
   switch_to_userspace();
 
   while (1) {

@@ -60,6 +60,8 @@ static struct Command cmd_op_sep(char* buffer) {
         cmd.command = CT_DATE;
     else if (_strncmp(command, "clear", _strlen(command)))
         cmd.command = CT_CLEAR;
+    else if (_strncmp(command, "spktest", _strlen(command)))
+        cmd.command = CT_PCSPKR_TOGGLE;
     else
         cmd.command = CT_INVALID;
 

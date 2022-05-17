@@ -17,5 +17,8 @@ void _shell_exec(struct Command command) {
             libvtty_out_oneline("/");
             libvtty_out_oneline((char*)libasm_get_dateyear());
             break;
+        case CT_PCSPKR_TOGGLE:
+            libasm_pcspkr_toggle();
+            break;
     }
 }

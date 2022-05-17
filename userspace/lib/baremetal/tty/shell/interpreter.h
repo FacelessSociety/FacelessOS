@@ -8,6 +8,7 @@ typedef enum {
     CT_REBOOT,
     CT_DATE,
     CT_CLEAR,
+    CT_PCSPKR_TOGGLE,
     CT_INVALID,
     CT_NONE
 } SHELL_COMMAND_TYPE;

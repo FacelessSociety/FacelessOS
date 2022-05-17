@@ -4,6 +4,7 @@ bits 64
 global libasm_get_dateyear
 global libasm_get_datemonth
 global libasm_get_dateday
+global libasm_pcspkr_toggle
 
 libasm_get_dateyear:
     mov rax, 0xB
@@ -23,4 +24,11 @@ libasm_get_dateday:
     mov rax, 0xC
     int 0x80
     mov rax, r15
+    retq
+
+
+libasm_pcspkr_toggle:
+    mov rax, 0xD
+    mov r15, 500
+    int 0x80
     retq
