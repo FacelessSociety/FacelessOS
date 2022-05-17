@@ -52,32 +52,29 @@ void libvtty_out(const char* str) {
 
 
 void libvtty_feed(uint16_t scancode) {
+    // If we hit backspace.
     if (SC_ASCII[scancode] == '\x08') {
         if (environ.prompt_offset <= 0) return;
         libvtty_pop();
         buffer[--environ.prompt_offset] = '\0';
         return;
-    } else if (environ.prompt_offset >= BUFFER_MAX_SIZE) {
-        return;
-    } else if (scancode == 28) {        // Enter.
-        if (environ.cur_y >= MAX_VTTY_LINES) {
-            environ.cur_y = 0;
-            __asm__ __volatile__("mov $0x9, %rax; int $0x80");      // Clear screen.
+    }
+
+    switch (scancode) {
+        case 28:                                    // Enter.
+            if (environ.cur_y >= MAX_VTTY_LINES) {
+                // Too many lines, clear up some space.
+                environ.cur_y = 0;                                          // Reset y.
+                __asm__ __volatile__("mov $0x9, %rax; int $0x80");          // SYS_CLEAR_SCREEN.
+            }
+
+            _shell_exec(shell_interp_process(buffer));
+            environ.prompt_offset = 0;
+            libvtty_writech('\n');
+            _memzero(buffer, MAX_VTTY_LINES);       // Null out buffer. 
+            ++environ.cur_y;
             make_prompt();
             return;
-        }
-        
-
-        _shell_exec(shell_interp_process(buffer));      // Execute buffer.
-        environ.prompt_offset = 0;
-        _memzero(buffer, BUFFER_MAX_SIZE);
-        libvtty_writech('\n');          // Make space for new prompt. 
-        make_prompt();
-
-        ++environ.cur_y;
-
-        return;
-
     }
 
     libvtty_writech(SC_ASCII[scancode]);
@@ -87,9 +84,12 @@ void libvtty_feed(uint16_t scancode) {
 
 void libvtty_init(void) {
     environ.flags = 0;
-    environ.prompt_offset = 0;
     environ.flags |= FLAG_INIT;
     environ.start_x = libvtty_get_x();
     environ.cur_y = 0;
+    environ.prompt_offset = 0;
+    libvtty_writech('\n');
+    _memzero(buffer, MAX_VTTY_LINES);       // Null out buffer. 
+    ++environ.cur_y;
     make_prompt();
 }
