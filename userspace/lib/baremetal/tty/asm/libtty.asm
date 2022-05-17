@@ -10,6 +10,10 @@ libvtty_writech:
     retq
 
 
+;; Pops a character from the prompt.
+;; NOTE: If a buffer is being used,
+;; the buffer will need to be popped
+;; manually.
 libvtty_pop:
     mov rax, 0x5            ;; SYS_LOWER_CANVAS_X.
     int 0x80                ;; SYSCALL.
