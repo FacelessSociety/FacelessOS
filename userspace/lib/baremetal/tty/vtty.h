@@ -12,5 +12,6 @@
 void libvtty_feed(uint16_t scancode);
 void libvtty_writech(char c);
 void libvtty_init(void);
+void libvtty_pop(void);
 
 #endif

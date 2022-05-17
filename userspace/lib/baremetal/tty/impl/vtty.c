@@ -14,7 +14,11 @@ typedef enum {
 } FLAG;
 
 
-static uint8_t flags = 0x0;
+
+static struct VTTYEnviron {
+    uint8_t flags;
+    uint16_t prompt_offset;
+} environ;
 
 
 static char libvtty_convert_scancode(uint16_t scancode) {
@@ -23,13 +27,22 @@ static char libvtty_convert_scancode(uint16_t scancode) {
 
 
 void libvtty_feed(uint16_t scancode) {
+    if (SC_ASCII[scancode] == '\x08') {
+        if (environ.prompt_offset <= 0) return;
+        libvtty_pop();
+        --environ.prompt_offset;
+        return;
+    }
+
     libvtty_writech(SC_ASCII[scancode]);
+    ++environ.prompt_offset;
 }
 
 
 void libvtty_init(void) {
-    if (flags & FLAG_INIT) return;
-    flags |= FLAG_INIT;
+    if (environ.flags & FLAG_INIT) return;
+    environ.prompt_offset = 0;
+    environ.flags |= FLAG_INIT;
 
     libvtty_writech('\n'); 
 

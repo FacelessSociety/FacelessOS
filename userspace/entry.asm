@@ -8,7 +8,7 @@ extern libvtty_init
 
 
 ring3_entry:
-    call libvtty_init
+    call libvtty_init 
     jmp __loop
 
 
