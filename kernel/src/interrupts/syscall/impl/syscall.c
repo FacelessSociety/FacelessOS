@@ -1,10 +1,11 @@
 #include <stdint.h>
 #include <debug/log.h>
 #include <drivers/ps2/Keyboard.h>
+#include <drivers/video/FrameBuffer.h>
 #include <util/asm.h>
 
 
-#define SYSCALL_COUNT 5
+#define SYSCALL_COUNT 9
 
 static volatile struct SyscallRegs {
     uint64_t r15;
@@ -25,13 +26,54 @@ static void sys_test(void) {
 
 // Returns keyboard status in R15.
 static void sys_keyboard_status(void) {
+    CLI;
     regs->r15 = ps2_keyb_fetch_status();
+    STI;
 }
 
 
 // Returns keyboard scancode in R15.
 static void sys_keyb_scancode(void) {
+    CLI;
     regs->r15 = ps2_keyb_fetch_scancode();
+    STI;
+}
+
+
+// Lowers FrameBuffer canvas X pos by 8.
+static void sys_lower_canvasx(void) {
+    CLI;
+    extern canvas_t canvas;
+
+    if (canvas.x > 0)
+        canvas.x -= 8;
+    
+    STI;
+}
+
+
+// Draws square onto framebuffer (when GUI is here, this syscall can be reserved).
+// TODO: When adding GUI, allow reserving this syscall to DE/WM.
+//  R15: X.
+//  R14: Y
+//  R13: Width.
+//  R12: Height.
+//  R11: Color.
+static void sys_lfb_draw_sq(void) {
+    CLI;
+    extern canvas_t canvas;
+    const uint32_t MAX_X = 2000;
+    const uint32_t MAX_Y = 2000;
+    const uint32_t MAX_W = 2000;
+    const uint32_t MAX_H = 2000;
+    const uint32_t MAX_COLOR = 0xFFFFFF;
+
+    if (regs->r15 > MAX_X || regs->r14 > MAX_Y || regs->r13 > MAX_W || regs->r12 > MAX_H || regs->r11 > MAX_COLOR)
+        return;
+
+
+    draw_square(canvas, regs->r15, regs->r14, regs->r13, regs->r12, regs->r11);
+    STI;
 }
 
 
@@ -40,6 +82,24 @@ static void sys_baremetal_writech(void) {
     CLI;
     char terminated_char[2] = {regs->r15, 0x0};
     log("%s", -1, terminated_char);
+    STI;
+}
+
+
+// Get canvas X position (returns X pos in R15).
+static void sys_get_canvas_x(void) {
+    CLI;
+    extern canvas_t canvas;
+    regs->r15 = canvas.x;
+    STI;
+}
+
+
+// Get canvas Y position (returns Y pos in R15).
+static void sys_get_canvas_y(void) {
+    CLI;
+    extern canvas_t canvas;
+    regs->r15 = canvas.y;
     STI;
 }
 
@@ -53,11 +113,15 @@ static void sys_int_wait(void) {
 
 // An array of syscall functions.
 static void(*syscall_table[SYSCALL_COUNT])(void) = {
-    sys_test,
-    sys_keyboard_status,
-    sys_keyb_scancode,
-    sys_int_wait,
-    sys_baremetal_writech
+    sys_test,                               // 0.
+    sys_keyboard_status,                    // 1.
+    sys_keyb_scancode,                      // 2.
+    sys_int_wait,                           // 3.
+    sys_baremetal_writech,                  // 4.
+    sys_lower_canvasx,                      // 5.
+    sys_lfb_draw_sq,                        // 6.
+    sys_get_canvas_x,                       // 7.
+    sys_get_canvas_y                        // 8.
 };
 
 
