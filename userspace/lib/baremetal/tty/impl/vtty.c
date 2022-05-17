@@ -87,9 +87,5 @@ void libvtty_init(void) {
     environ.flags |= FLAG_INIT;
     environ.start_x = libvtty_get_x();
     environ.cur_y = 0;
-    environ.prompt_offset = 0;
-    libvtty_writech('\n');
-    _memzero(buffer, MAX_VTTY_LINES);       // Null out buffer. 
-    ++environ.cur_y;
-    make_prompt();
+    environ.prompt_offset = 0; 
 }
