@@ -2,6 +2,7 @@
 bits 64
 global libvtty_writech
 global libvtty_pop
+global libvtty_get_x
 
 libvtty_writech:
     mov rax, 0x4            ;; SYS_BAREMETAL_WRITECH
@@ -32,3 +33,9 @@ libvtty_pop:
     mov r11, 0x000000       ;; COLOR.
     int 0x80                ;; SYSCALL.
     retq                    ;; RETURN.
+
+libvtty_get_x:
+    mov rax, 0x5            ;; SYS_GET_CANVAS_X
+    int 0x80                ;; SYSCALL.
+    mov rax, r15            ;; MOVE CANVAS_X INTO RAX.
+    retq
