@@ -6,6 +6,7 @@
 #include <stdint.h>
 
 #define BUFFER_MAX_SIZE 50
+#define MAX_VTTY_LINES 15
 
 
 static const char* const SC_ASCII = "\x00\x1B" "1234567890-=" "\x08"
@@ -22,6 +23,7 @@ static struct VTTYEnviron {
     uint8_t flags;
     uint16_t prompt_offset;
     size_t start_x;
+    size_t cur_y;
 } environ;
 
 
@@ -30,6 +32,14 @@ static char buffer[BUFFER_MAX_SIZE];
 
 static char libvtty_convert_scancode(uint16_t scancode) {
     return SC_ASCII[scancode];
+}
+
+
+static void make_prompt(void) {
+    // Make prompt.
+    for (size_t i = 0; i < _strlen(VTTY_PROMPT) - 1; ++i) {
+        libvtty_writech(VTTY_PROMPT[i]);
+    }
 }
 
 
@@ -50,15 +60,21 @@ void libvtty_feed(uint16_t scancode) {
     } else if (environ.prompt_offset >= BUFFER_MAX_SIZE) {
         return;
     } else if (scancode == 28) {        // Enter.
+        if (environ.cur_y >= MAX_VTTY_LINES) {
+            environ.cur_y = 0;
+            __asm__ __volatile__("mov $0x9, %rax; int $0x80");      // Clear screen.
+            make_prompt();
+            return;
+        }
+        
+
         _shell_exec(shell_interp_process(buffer));      // Execute buffer.
         environ.prompt_offset = 0;
         _memzero(buffer, BUFFER_MAX_SIZE);
-        libvtty_writech('\n');          // Make space for new prompt.
-    
-        // Make prompt.
-        for (size_t i = 0; i < _strlen(VTTY_PROMPT) - 1; ++i) {
-            libvtty_writech(VTTY_PROMPT[i]);
-        }
+        libvtty_writech('\n');          // Make space for new prompt. 
+        make_prompt();
+
+        ++environ.cur_y;
 
         return;
 
@@ -74,8 +90,6 @@ void libvtty_init(void) {
     environ.prompt_offset = 0;
     environ.flags |= FLAG_INIT;
     environ.start_x = libvtty_get_x();
-
-    for (size_t i = 0; i < _strlen(VTTY_PROMPT) - 1; ++i) {
-        libvtty_writech(VTTY_PROMPT[i]);
-    }
+    environ.cur_y = 0;
+    make_prompt();
 }

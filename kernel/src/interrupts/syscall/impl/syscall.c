@@ -3,9 +3,10 @@
 #include <drivers/ps2/Keyboard.h>
 #include <drivers/video/FrameBuffer.h>
 #include <util/asm.h>
+#include <util/baremetal_style.h>
 
 
-#define SYSCALL_COUNT 9
+#define SYSCALL_COUNT 10
 
 static volatile struct SyscallRegs {
     uint64_t r15;
@@ -95,6 +96,14 @@ static void sys_get_canvas_x(void) {
 }
 
 
+static void sys_clear_screen(void) {
+    CLI;
+    extern canvas_t canvas;
+    clearScreen(&canvas, BG_COLOR);
+    STI;
+}
+
+
 // Get canvas Y position (returns Y pos in R15).
 static void sys_get_canvas_y(void) {
     CLI;
@@ -121,7 +130,8 @@ static void(*syscall_table[SYSCALL_COUNT])(void) = {
     sys_lower_canvasx,                      // 5.
     sys_lfb_draw_sq,                        // 6.
     sys_get_canvas_x,                       // 7.
-    sys_get_canvas_y                        // 8.
+    sys_get_canvas_y,                       // 8.
+    sys_clear_screen                        // 9.
 };
 
 
