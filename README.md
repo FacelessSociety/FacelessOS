@@ -2,7 +2,7 @@
 
 ## An OS for the faceless.
 
-### Baremetal Commands
+### Baremetal Built-In Commands
 
 ```
 reboot          [Reboots system]
