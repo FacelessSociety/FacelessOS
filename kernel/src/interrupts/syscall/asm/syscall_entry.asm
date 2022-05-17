@@ -2,6 +2,7 @@
 bits 64
 
 global syscall_entry
+global syscall_return
 
 extern dispatch_syscall
 
@@ -17,6 +18,14 @@ syscall_entry:
     mov rsi, regs
 
     call dispatch_syscall
+ 
+    mov r15, [regs + 0 * 8]
+    mov r14, [regs + 1 * 8]
+    mov r13, [regs + 2 * 8]
+    mov r12, [regs + 3 * 8]
+    mov r11, [regs + 4 * 8]
+    mov r10, [regs + 5 * 8]
+
     iretq
 
 

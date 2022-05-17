@@ -1,0 +1,4 @@
+KEYBOARD STATUS BITS:
+
+- Bit 0: IRQ FIRED      [ To mark as serviced, unset this bit ].
+- Bit 1: PRESSED        [ Unset if key was released ]

@@ -4,7 +4,6 @@
 #include <arch/io/legacypic.h>
 #include <stddef.h>
 #include <protection/r3kc.h>
-#include <tty/vtty.h>
 
 #define KEYB_IN_ISDIGIT(C) (C >= '0' && C <= '9')
 #define KEYB_IN_ALPHA(C) (C >= 'a' && C <= 'z')
@@ -12,29 +11,32 @@
 
 // 2022 Ian Moffett <ian@kesscoin.com>
 
-static const char* const SC_ASCII = "\x00\x1B" "1234567890-=" "\x08"
-"\x00" "qwertyuiop[]" "\x0D\x1D" "asdfghjkl;'`" "\x00" "\\"
-"zxcvbnm,./" "\x00\x00\x00" " ";
+static uint16_t scancode;
+static uint8_t keyboard_status = 0;
+
 
 __attribute__((interrupt)) void ps2_irq1_response(struct InterruptStackFrame*) {
-    uint32_t scancode = inportb(0x60);
-    char ch = SC_ASCII[scancode];
+    scancode = inportb(0x60);
 
     if (scancode & 0x80) {
+        keyboard_status &= ~(1 << 1);       // Unsetting pressed  bit.
         PIC_sendEOI(1);
         return;
     }
 
-    if ((vtty_initialized() && KEYB_IN_ISDIGIT(ch)) || KEYB_IN_ALPHA(ch) || ch == ' ') {
-        vtty_feed(ch);          // Feed character into virtual TTY.
-    } else if (ch == '\x08') {      // Backspace.
-        vtty_pop();
-    } else if (scancode == 28) {    // Enter.
-        vtty_submit_command();
-    }
-
-
+    keyboard_status |= (1 << 0);            // Setting IRQ_FIRED bit.
+    keyboard_status |= (1 << 1);            // Setting PRESSED bit.
 
     PIC_sendEOI(1);
     inportb(0x60);
+}
+
+
+uint16_t ps2_keyb_fetch_scancode(void) {
+    return scancode;
+}
+
+
+uint8_t ps2_keyb_fetch_status(void) {
+    return keyboard_status;
 }

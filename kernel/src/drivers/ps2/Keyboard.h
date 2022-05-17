@@ -7,5 +7,7 @@
 
 
 __attribute__((interrupt)) void ps2_irq1_response(struct InterruptStackFrame*);
+uint16_t ps2_keyb_fetch_scancode(void);
+uint8_t ps2_keyb_fetch_status(void);
 
 #endif
