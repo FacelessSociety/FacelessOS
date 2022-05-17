@@ -14,6 +14,7 @@ void libvtty_writech(char c);
 void libvtty_init(void);
 void libvtty_pop(void);
 void libvtty_out(const char* str);
+void libvtty_out_oneline(const char* str);
 uint64_t libvtty_get_x(void);
 
 #endif

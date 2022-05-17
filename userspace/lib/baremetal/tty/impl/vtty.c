@@ -15,7 +15,8 @@ static const char* const SC_ASCII = "\x00\x1B" "1234567890-=" "\x08"
 
 
 typedef enum {
-    FLAG_INIT = (1 << 0)
+    FLAG_INIT = (1 << 0),
+    FLAG_MAKENEWLINE = (1 << 1)         // If a newline is needed, this bit is set.
 } FLAG;
 
 
@@ -45,6 +46,13 @@ static void make_prompt(void) {
 
 void libvtty_out(const char* str) {
     libvtty_writech('\n');
+    for (size_t i = 0; i < _strlen(str) - 1; ++i) {
+        libvtty_writech(str[i]);
+    }
+}
+
+
+void libvtty_out_oneline(const char* str) {
     for (size_t i = 0; i < _strlen(str) - 1; ++i) {
         libvtty_writech(str[i]);
     }
@@ -88,4 +96,5 @@ void libvtty_init(void) {
     environ.start_x = libvtty_get_x();
     environ.cur_y = 0;
     environ.prompt_offset = 0; 
+    make_prompt();
 }
