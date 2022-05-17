@@ -27,7 +27,7 @@ libvtty_pop:
     int 0x80                ;; SYSCALL.
 
     mov rax, 0x6            ;; SYS_LFB_DRAW_SQ
-    mov r13, 1000           ;; WIDTH.
+    mov r13, 20             ;; WIDTH.
     mov r12, 20             ;; HEIGHT.
     mov r11, 0x000000       ;; COLOR.
     int 0x80                ;; SYSCALL.

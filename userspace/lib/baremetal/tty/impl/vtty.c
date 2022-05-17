@@ -40,11 +40,9 @@ void libvtty_feed(uint16_t scancode) {
 
 
 void libvtty_init(void) {
-    if (environ.flags & FLAG_INIT) return;
+    environ.flags = 0;
     environ.prompt_offset = 0;
     environ.flags |= FLAG_INIT;
-
-    libvtty_writech('\n'); 
 
     for (size_t i = 0; i < _strlen(VTTY_PROMPT) - 1; ++i) {
         libvtty_writech(VTTY_PROMPT[i]);

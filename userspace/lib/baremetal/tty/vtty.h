@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#define VTTY_PROMPT "subgod@FacelessOS> \0"
+#define VTTY_PROMPT "subgod@FacelessOS>  \0"
 
 
 // 2022 Ian Moffett <ian@kesscoin.com>
