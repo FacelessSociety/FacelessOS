@@ -4,12 +4,13 @@
 #include <drivers/ps2/Keyboard.h>
 #include <drivers/video/FrameBuffer.h>
 #include <drivers/rtc/rtc.h>
+#include <drivers/audio/pcspkr.h>
 #include <util/asm.h>
 #include <util/string.h>
 #include <util/baremetal_style.h>
 
 
-#define SYSCALL_COUNT 13
+#define SYSCALL_COUNT 14
 
 static volatile struct SyscallRegs {
     uint64_t r15;
@@ -107,12 +108,32 @@ static void sys_clear_screen(void) {
 }
 
 
+/*
+ *  R15: Frequency (hz).
+ *
+ */
+static void sys_spktest(void) {
+    CLI;
+
+    pcspkr_play(regs->r15);
+
+    for (int i = 0; i < 999999999; ++i) {
+       CLI; 
+    }
+
+    pcspkr_stop();
+
+    STI;
+}
+
+
 // Month is returned in R15.
 static void sys_get_month(void) {
     CLI;
-    struct RTCDateTime datetime = rtc_read_date();
+    static struct RTCDateTime datetime;
+    datetime = rtc_read_date();
 
-    regs->r15 = dec2str(datetime.month);
+    regs->r15 = (uint64_t)dec2str(datetime.month);
 
     STI;
 }
@@ -120,19 +141,22 @@ static void sys_get_month(void) {
 // Year is returned in R15.
 static void sys_get_year(void) {
     CLI;
-    struct RTCDateTime datetime = rtc_read_date();
+    static struct RTCDateTime datetime;
+    datetime = rtc_read_date();
 
-    regs->r15 = dec2str(datetime.year);
+    regs->r15 = (uint64_t)dec2str(datetime.year);
 
     STI;
 }
 
 
+// Day in R15.
 static void sys_get_day(void) {
     CLI;
-    struct RTCDateTime datetime = rtc_read_date();
+    static struct RTCDateTime datetime;
+    datetime = rtc_read_date();
 
-    regs->r15 = dec2str(datetime.day);
+    regs->r15 = (uint64_t)dec2str(datetime.day);
 
     STI;
 }
@@ -169,6 +193,7 @@ static void(*syscall_table[SYSCALL_COUNT])(void) = {
     sys_get_month,                          // 10.
     sys_get_year,                           // 11.
     sys_get_day,                            // 12.
+    sys_spktest,                            // 13.
 };
 
 
