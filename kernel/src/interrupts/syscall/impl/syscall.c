@@ -1,12 +1,15 @@
+// 2022 Ian Moffett <ian@kesscoin.com>
 #include <stdint.h>
 #include <debug/log.h>
 #include <drivers/ps2/Keyboard.h>
 #include <drivers/video/FrameBuffer.h>
+#include <drivers/rtc/rtc.h>
 #include <util/asm.h>
+#include <util/string.h>
 #include <util/baremetal_style.h>
 
 
-#define SYSCALL_COUNT 10
+#define SYSCALL_COUNT 13
 
 static volatile struct SyscallRegs {
     uint64_t r15;
@@ -104,6 +107,37 @@ static void sys_clear_screen(void) {
 }
 
 
+// Month is returned in R15.
+static void sys_get_month(void) {
+    CLI;
+    struct RTCDateTime datetime = rtc_read_date();
+
+    regs->r15 = dec2str(datetime.month);
+
+    STI;
+}
+
+// Year is returned in R15.
+static void sys_get_year(void) {
+    CLI;
+    struct RTCDateTime datetime = rtc_read_date();
+
+    regs->r15 = dec2str(datetime.year);
+
+    STI;
+}
+
+
+static void sys_get_day(void) {
+    CLI;
+    struct RTCDateTime datetime = rtc_read_date();
+
+    regs->r15 = dec2str(datetime.day);
+
+    STI;
+}
+
+
 // Get canvas Y position (returns Y pos in R15).
 static void sys_get_canvas_y(void) {
     CLI;
@@ -131,7 +165,10 @@ static void(*syscall_table[SYSCALL_COUNT])(void) = {
     sys_lfb_draw_sq,                        // 6.
     sys_get_canvas_x,                       // 7.
     sys_get_canvas_y,                       // 8.
-    sys_clear_screen                        // 9.
+    sys_clear_screen,                       // 9.
+    sys_get_month,                          // 10.
+    sys_get_year,                           // 11.
+    sys_get_day,                            // 12.
 };
 
 
