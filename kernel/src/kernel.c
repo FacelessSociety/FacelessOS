@@ -115,15 +115,6 @@ static void init(meminfo_t meminfo) {
    
     // Exceptions.
     for (int i = 0x0; i <= 0xE; ++i) {
-        // Reserved exceptions or just ones we don't need.
-        switch (i) {
-            case 0x1:
-            case 0x2:
-            case 0x3:
-            case 0x9:
-                continue;
-        }
-
         idt_set_vector(i, exceptions[i], TRAP_GATE_FLAGS);
     }
 
