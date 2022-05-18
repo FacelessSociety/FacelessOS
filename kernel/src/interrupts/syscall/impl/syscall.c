@@ -117,7 +117,7 @@ static void sys_spktest(void) {
 
     pcspkr_play(regs->r15);
 
-    for (int i = 0; i < 999999999; ++i) {
+    for (int i = 0; i < 99999999; ++i) {
        CLI; 
     }
 
