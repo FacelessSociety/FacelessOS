@@ -147,7 +147,7 @@ int _start(framebuffer_t* lfb, psf1_font_t* font, meminfo_t meminfo, void* rsdp,
   log("Finished initializing subsystems.\n", S_INFO);
 
   STI;
-    
+
   switch_to_userspace();
 
   while (1) {

@@ -25,6 +25,7 @@ global page_fault
 %define PANIC_BG_COLOR 0x00008B
 
 %macro panic 1
+    cli
     mov rdi, canvas
     mov rsi, PANIC_BG_COLOR
     call clearScreen
