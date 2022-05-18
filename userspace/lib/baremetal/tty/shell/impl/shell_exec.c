@@ -24,5 +24,8 @@ void _shell_exec(struct Command command) {
         case CT_PIANO:
             libpiano_init();
             break;
+        case CT_DMPPCI:
+            __asm__ __volatile__("mov $0xE, %rax; int $0x80");      // SYS_LSPCI.
+            break;
     }
 }

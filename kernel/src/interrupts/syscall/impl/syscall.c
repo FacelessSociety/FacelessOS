@@ -5,12 +5,13 @@
 #include <drivers/video/FrameBuffer.h>
 #include <drivers/rtc/rtc.h>
 #include <drivers/audio/pcspkr.h>
+#include <arch/pci/pci.h>
 #include <util/asm.h>
 #include <util/string.h>
 #include <util/baremetal_style.h>
 
 
-#define SYSCALL_COUNT 14
+#define SYSCALL_COUNT 15
 
 static volatile struct SyscallRegs {
     uint64_t r15;
@@ -162,6 +163,13 @@ static void sys_get_day(void) {
 }
 
 
+static void list_pci_devices(void) {
+    CLI;
+    pci_bruteforce_dump();
+    STI;
+}
+
+
 // Get canvas Y position (returns Y pos in R15).
 static void sys_get_canvas_y(void) {
     CLI;
@@ -194,6 +202,7 @@ static void(*syscall_table[SYSCALL_COUNT])(void) = {
     sys_get_year,                           // 11.
     sys_get_day,                            // 12.
     sys_spktest,                            // 13.
+    list_pci_devices                        // 14.
 };
 
 

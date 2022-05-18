@@ -10,6 +10,7 @@ typedef enum {
     CT_CLEAR,
     CT_PCSPKR_TOGGLE,
     CT_PIANO,
+    CT_DMPPCI,                      // Dump PCI.
     CT_INVALID,
     CT_NONE
 } SHELL_COMMAND_TYPE;
