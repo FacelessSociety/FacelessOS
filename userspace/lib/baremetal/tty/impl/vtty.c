@@ -73,6 +73,7 @@ void libvtty_pause(void(*slave_handler)(uint16_t scancode)) {
 
 
 void libvtty_resume(void) {
+    __asm__ __volatile__("mov $0x9, %rax; int $0x80");          // SYS_CLEAR_SCREEN.
     environ.flags &= ~(FLAG_PAUSED);        // Simpily unset FLAG_PAUSED bit.
     environ.slave_handler = NULL;
     make_prompt();
