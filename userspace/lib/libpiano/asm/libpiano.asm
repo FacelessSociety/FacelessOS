@@ -6,6 +6,7 @@ global libpiano_init
 extern libvtty_pause
 extern libvtty_resume
 extern libvtty_scancode2ascii
+extern rand_range
 
 %define KEY_WIDTH 50
 %define KEY_HEIGHT 150
@@ -120,6 +121,9 @@ quit:
 
 slave_handler:
     call libvtty_scancode2ascii
+
+    .start:
+
     cmp rax, '1'
     je beep1
     cmp rax, '2'
@@ -140,11 +144,20 @@ slave_handler:
     je beep9
     cmp rax, 'q'
     je .quit
+    cmp rax, 'r'
+    je .randstart
     retq
 
     .quit:
         call quit
         retq
+
+    .rand:
+        mov rdi, 0
+        mov rsi, 9
+        call rand_range
+        add rax, '0'
+        jmp .start
 
 
 libpiano_init:
