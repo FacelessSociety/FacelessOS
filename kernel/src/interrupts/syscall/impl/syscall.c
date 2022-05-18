@@ -188,21 +188,21 @@ static void sys_int_wait(void) {
 
 // An array of syscall functions.
 static void(*syscall_table[SYSCALL_COUNT])(void) = {
-    sys_test,                               // 0.
-    sys_keyboard_status,                    // 1.
-    sys_keyb_scancode,                      // 2.
-    sys_int_wait,                           // 3.
-    sys_baremetal_writech,                  // 4.
-    sys_lower_canvasx,                      // 5.
-    sys_lfb_draw_sq,                        // 6.
-    sys_get_canvas_x,                       // 7.
-    sys_get_canvas_y,                       // 8.
-    sys_clear_screen,                       // 9.
-    sys_get_month,                          // 10.
-    sys_get_year,                           // 11.
-    sys_get_day,                            // 12.
-    sys_spktest,                            // 13.
-    list_pci_devices                        // 14.
+    sys_test,                               // 0x0.
+    sys_keyboard_status,                    // 0x1.
+    sys_keyb_scancode,                      // 0x2.
+    sys_int_wait,                           // 0x3.
+    sys_baremetal_writech,                  // 0x4.
+    sys_lower_canvasx,                      // 0x5.
+    sys_lfb_draw_sq,                        // 0x6.
+    sys_get_canvas_x,                       // 0x7.
+    sys_get_canvas_y,                       // 0x8.
+    sys_clear_screen,                       // 0x9.
+    sys_get_month,                          // 0xA.
+    sys_get_year,                           // 0xB.
+    sys_get_day,                            // 0xC.
+    sys_spktest,                            // 0xD.
+    list_pci_devices                        // 0xE.
 };
 
 
