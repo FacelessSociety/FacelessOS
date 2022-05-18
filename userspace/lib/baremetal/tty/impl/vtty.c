@@ -16,7 +16,7 @@ static const char* const SC_ASCII = "\x00\x1B" "1234567890-=" "\x08"
 
 typedef enum {
     FLAG_INIT = (1 << 0),
-    FLAG_MAKENEWLINE = (1 << 1)         // If a newline is needed, this bit is set.
+    FLAG_PAUSED = (1 << 1)
 } FLAG;
 
 
@@ -25,6 +25,7 @@ static struct VTTYEnviron {
     uint16_t prompt_offset;
     size_t start_x;
     size_t cur_y;
+    void(*slave_handler)(uint16_t);
 } environ;
 
 
@@ -59,7 +60,32 @@ void libvtty_out_oneline(const char* str) {
 }
 
 
+char libvtty_scancode2ascii(uint16_t scancode) {
+    return SC_ASCII[scancode];
+}
+
+// Pauses the TTY and passes keyboard control to another program.
+void libvtty_pause(void(*slave_handler)(uint16_t scancode)) { 
+    __asm__ __volatile__("mov $0x9, %rax; int $0x80");          // SYS_CLEAR_SCREEN.
+    environ.flags |= FLAG_PAUSED;
+    environ.slave_handler = slave_handler;
+}
+
+
+void libvtty_resume(void) {
+    environ.flags &= ~(FLAG_PAUSED);        // Simpily unset FLAG_PAUSED bit.
+    environ.slave_handler = NULL;
+    make_prompt();
+}
+
+
 void libvtty_feed(uint16_t scancode) {
+    if (environ.flags & FLAG_PAUSED) {
+       environ.slave_handler(scancode); 
+       return;
+    }
+
+
     // If we hit backspace.
     if (SC_ASCII[scancode] == '\x08') {
         if (environ.prompt_offset <= 0) return;
@@ -80,6 +106,9 @@ void libvtty_feed(uint16_t scancode) {
             environ.prompt_offset = 0;
             libvtty_writech('\n');
             _memzero(buffer, MAX_VTTY_LINES);       // Null out buffer. 
+    
+            // If the prompt is paused (because for example a command did it) we need to handler it.
+            if (environ.flags & FLAG_PAUSED) return;
             ++environ.cur_y;
             make_prompt();
             return;

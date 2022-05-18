@@ -1,5 +1,6 @@
 #include <lib/baremetal/tty/shell/shell_exec.h>
 #include <lib/baremetal/tty/vtty.h>
+#include <lib/libpiano/libpiano.h>
 #include <lib/libasm/libasm.h>
 
 // 2022 Ian Moffett <ian@kesscoin.com>
@@ -19,6 +20,9 @@ void _shell_exec(struct Command command) {
             break;
         case CT_PCSPKR_TOGGLE:
             libasm_pcspkr_toggle();
+            break;
+        case CT_PIANO:
+            libpiano_init();
             break;
     }
 }

@@ -9,6 +9,7 @@ typedef enum {
     CT_DATE,
     CT_CLEAR,
     CT_PCSPKR_TOGGLE,
+    CT_PIANO,
     CT_INVALID,
     CT_NONE
 } SHELL_COMMAND_TYPE;

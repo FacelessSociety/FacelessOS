@@ -62,6 +62,8 @@ static struct Command cmd_op_sep(char* buffer) {
         cmd.command = CT_CLEAR;
     else if (_strncmp(command, "spktest", _strlen(command)))
         cmd.command = CT_PCSPKR_TOGGLE;
+    else if (_strncmp(command, "piano", _strlen(command)))
+        cmd.command = CT_PIANO;
     else
         cmd.command = CT_INVALID;
 
