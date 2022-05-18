@@ -11,6 +11,7 @@ all:
 	bash builduserspace.sh
 	mv *.o kernel/lib/userspace/
 	cd gnu-efi/; make; make bootloader; cd ../; cd kernel; make; make buildimg
+	@ echo -e "\n\nNOTE FOR DEVELOPERS WORKING ON THIS: Please run python3 check.py if you are a developer.\n\n"
 
 run:
 	cd kernel/; make debug

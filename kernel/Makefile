@@ -18,17 +18,17 @@ rwildcard=$(foreach d,$(wildcard $(1:=/*)),$(call rwildcard,$d,$2) $(filter $(su
 
 SRC = $(call rwildcard,$(SRCDIR),*.c)          
 ASMSRC = $(call rwildcard,$(SRCDIR),*.asm)
-OBJS = $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRC))
-OBJS += $(patsubst $(SRCDIR)/%.asm, $(OBJDIR)/%.asm.o, $(ASMSRC))
+OBJS = $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.kernel.o, $(SRC))
+OBJS += $(patsubst $(SRCDIR)/%.asm, $(OBJDIR)/%.kernel.o, $(ASMSRC))
 OBJS += $(call rwildcard,$(OBJDIR)/userspace,*.o)
 DIRS = $(wildcard $(SRCDIR)/*)
 
 kernel: $(OBJS) link
-$(OBJDIR)/%.o: $(SRCDIR)/%.c
+$(OBJDIR)/%.kernel.o: $(SRCDIR)/%.c
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) -c $^ -o $@ -I src
 
-$(OBJDIR)/%.asm.o: $(SRCDIR)/%.asm
+$(OBJDIR)/%.kernel.o: $(SRCDIR)/%.asm
 
 	$(ASMC) $^ -felf64 -o $@
 

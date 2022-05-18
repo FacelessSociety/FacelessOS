@@ -8,6 +8,8 @@
 
 #define PAGE_ADDR_MASK 0x000ffffffffff000
 #define GB 0x40000000UL
+#define KERNEL_RESERVED_START 0x0000000000005000 
+#define KERNEL_RESERVED_END 0x8D44
 
 
 __attribute__((aligned(0x1000))) static struct MappingTable {
@@ -150,6 +152,11 @@ void vmm_init(meminfo_t meminfo) {
         panic("NO MEMORY LEFT!\n");
 
     for (uint64_t i = 0; i < GB*20; i += PAGE_SIZE) {
+        if (i >= KERNEL_RESERVED_START && i <= KERNEL_RESERVED_END) {
+            map_page(i, VMM_P_PRESENT | VMM_RW_WRITABLE);
+            continue;
+        }
+
         map_page(i, VMM_P_PRESENT | VMM_RW_WRITABLE | VMM_US_USER);
     }
 
