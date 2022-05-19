@@ -18,12 +18,18 @@ static void handler(uint16_t scancode) {
         ctrl_pressed = 0;
 
     if (ctrl_pressed) {
+        if (scancode == 1) {
+            libvtty_resume();
+            return;
+        }
+
         switch (SC_ASCII[scancode]) {
             case 't':
                 libwm_create_window();
                 break;
             case 'q':
                 libwm_pop_window();
+                break;
         }
     }
 
