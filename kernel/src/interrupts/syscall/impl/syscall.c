@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <debug/log.h>
 #include <drivers/ps2/Keyboard.h>
+#include <drivers/ps2/Controller.h>
 #include <drivers/video/FrameBuffer.h>
 #include <drivers/rtc/rtc.h>
 #include <drivers/audio/pcspkr.h>
@@ -11,7 +12,7 @@
 #include <util/baremetal_style.h>
 
 
-#define SYSCALL_COUNT 15
+#define SYSCALL_COUNT 16
 
 static volatile struct SyscallRegs {
     uint64_t r15;
@@ -27,6 +28,13 @@ extern uint64_t* syscall_return;
 
 static void sys_test(void) {
     log("Hello Syscall!\n", S_INFO);
+}
+
+
+static void sys_reboot(void) {
+    CLI;
+    ps2_send_reset();
+    STI;
 }
 
 
@@ -202,7 +210,8 @@ static void(*syscall_table[SYSCALL_COUNT])(void) = {
     sys_get_year,                           // 11.
     sys_get_day,                            // 12.
     sys_spktest,                            // 13.
-    list_pci_devices                        // 14.
+    list_pci_devices,                       // 14.
+    sys_reboot                              // 15.
 };
 
 
