@@ -30,6 +30,15 @@ void libwm_create_window(void) {
 
 
 void libwm_pop_window(void) {
+    if (cur_id == 0) return;
+
     --cur_id;
     libgfx_draw_square(windows[cur_id].xpos, windows[cur_id].ypos, windows[cur_id].width, windows[cur_id].height, 0x000000);
+}
+
+
+void libwm_destroyall(void) {
+    for (int i = 0; i < LIBWM_MAX_WINDOWS; ++i) {
+        libwm_pop_window();
+    }
 }

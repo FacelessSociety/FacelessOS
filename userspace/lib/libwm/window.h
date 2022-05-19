@@ -23,6 +23,7 @@ struct Window {
 
 
 void libwm_create_window(void);
-void libwm_pop_window(void);
+void libwm_pop_window(void);                // Pops a window (destroys) from top.
+void libwm_destroyall(void);
 
 #endif
