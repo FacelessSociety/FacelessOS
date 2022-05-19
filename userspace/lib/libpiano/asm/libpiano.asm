@@ -145,7 +145,7 @@ slave_handler:
     cmp rax, 'q'
     je .quit
     cmp rax, 'r'
-    je .randstart
+    je .rand
     retq
 
     .quit:
