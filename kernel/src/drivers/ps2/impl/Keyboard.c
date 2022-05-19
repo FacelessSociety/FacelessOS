@@ -3,7 +3,6 @@
 #include <arch/io/io.h>
 #include <arch/io/legacypic.h>
 #include <stddef.h>
-#include <protection/r3kc.h>
 
 #define KEYB_IN_ISDIGIT(C) (C >= '0' && C <= '9')
 #define KEYB_IN_ALPHA(C) (C >= 'a' && C <= 'z')
