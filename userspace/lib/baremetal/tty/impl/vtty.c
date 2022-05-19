@@ -60,13 +60,19 @@ void libvtty_out_oneline(const char* str) {
 }
 
 
+void libvtty_reset(void) {
+    __asm__ __volatile__("mov $0x9, %rax; int $0x80");          // SYS_CLEAR_SCREEN.
+    environ.cur_y = 0;
+}
+
+
 char libvtty_scancode2ascii(uint16_t scancode) {
     return SC_ASCII[scancode];
 }
 
 // Pauses the TTY and passes keyboard control to another program.
 void libvtty_pause(void(*slave_handler)(uint16_t scancode)) { 
-    __asm__ __volatile__("mov $0x9, %rax; int $0x80");          // SYS_CLEAR_SCREEN.
+    __asm__ __volatile__("mov $0x9, %rax; int $0x80");          // SYS_CLEAR_SCREEN.  
     environ.flags |= FLAG_PAUSED;
     environ.slave_handler = slave_handler;
 }
@@ -75,6 +81,7 @@ void libvtty_pause(void(*slave_handler)(uint16_t scancode)) {
 void libvtty_resume(void) {
     __asm__ __volatile__("mov $0x9, %rax; int $0x80");          // SYS_CLEAR_SCREEN.
     environ.flags &= ~(FLAG_PAUSED);        // Simpily unset FLAG_PAUSED bit.
+    environ.cur_y = 0;
     environ.slave_handler = NULL;
     make_prompt();
 }

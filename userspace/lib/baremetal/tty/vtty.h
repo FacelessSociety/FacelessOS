@@ -18,6 +18,7 @@ void libvtty_pause(void(*slave_handler)(uint16_t scancode));
 void libvtty_resume(void);
 void libvtty_out(const char* str);
 void libvtty_out_oneline(const char* str);
+void libvtty_reset(void);
 uint64_t libvtty_get_x(void);
 
 #endif
