@@ -24,9 +24,6 @@ __loop:
     test r15, 1             ;; IRQ FIRED BIT.
     jz .end                 ;; If set, handle keypress.
 
-    test r15, (1 << 1)      ;; PRESSED BIT.
-    jz .end
-
     .handle_keypress:
         mov rax, 0x2        ;; SYS_KEYBOARD_SCANCODE.
         int 0x80            ;; SYSCALL (SCANCODE RETURNED IN R15).
