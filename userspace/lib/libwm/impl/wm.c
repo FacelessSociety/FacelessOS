@@ -18,7 +18,7 @@ static void handler(uint16_t scancode) {
         ctrl_pressed = 0;
 
     if (ctrl_pressed) {
-        if (scancode == 1) {
+        if (scancode == 1) {            // Escape.
             libwm_destroyall();
             libvtty_resume();
             return;
