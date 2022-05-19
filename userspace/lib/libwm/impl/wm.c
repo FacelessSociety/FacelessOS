@@ -22,6 +22,8 @@ static void handler(uint16_t scancode) {
             case 't':
                 libwm_create_window();
                 break;
+            case 'q':
+                libwm_pop_window();
         }
     }
 

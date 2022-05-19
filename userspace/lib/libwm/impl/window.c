@@ -27,3 +27,9 @@ void libwm_create_window(void) {
     windows[cur_id++] = newwin;
     libgfx_draw_square(newwin.xpos, newwin.ypos, newwin.width, newwin.height, 0x808080);
 }
+
+
+void libwm_pop_window(void) {
+    --cur_id;
+    libgfx_draw_square(windows[cur_id].xpos, windows[cur_id].ypos, windows[cur_id].width, windows[cur_id].height, 0x000000);
+}

@@ -10,7 +10,7 @@
 #define LIMWM_DEFAULT_HEIGHT 480
 #define LIBWM_DEFAULT_X 0
 #define LIBWM_DEFAULT_Y 50
-#define LIBWM_MAX_WINDOWS 3
+#define LIBWM_MAX_WINDOWS 2
 
 
 struct Window {
@@ -23,7 +23,6 @@ struct Window {
 
 
 void libwm_create_window(void);
-
-
+void libwm_pop_window(void);
 
 #endif
