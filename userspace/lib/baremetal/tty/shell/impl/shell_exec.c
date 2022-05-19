@@ -2,6 +2,7 @@
 #include <lib/baremetal/tty/vtty.h>
 #include <lib/libpiano/libpiano.h>
 #include <lib/libasm/libasm.h>
+#include <lib/libwm/wm.h>
 
 // 2022 Ian Moffett <ian@kesscoin.com>
 
@@ -26,6 +27,13 @@ void _shell_exec(struct Command command) {
             break;
         case CT_DMPPCI:
             __asm__ __volatile__("mov $0xE, %rax; int $0x80");      // SYS_LSPCI.
+            break;
+        case CT_REBOOT:
+            __asm__ __volatile__("mov $0xF, %rax; int $0x80");
+            break;
+            libwm_create_window();
+        case CT_WM:
+            libwm_init();
             break;
     }
 }

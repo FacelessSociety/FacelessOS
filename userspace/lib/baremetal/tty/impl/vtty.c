@@ -86,6 +86,8 @@ void libvtty_feed(uint16_t scancode) {
        return;
     }
 
+    if (scancode & 0x80) return;
+
 
     // If we hit backspace.
     if (SC_ASCII[scancode] == '\x08') {
