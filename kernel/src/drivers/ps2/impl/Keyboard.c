@@ -18,14 +18,12 @@ static uint8_t keyboard_status = 0;
 __attribute__((interrupt)) void ps2_irq1_response(struct InterruptStackFrame*) {
     scancode = inportb(0x60);
 
-    if (scancode & 0x80) {
+    if (scancode & 0x80)
         keyboard_status &= ~(1 << 1);       // Unsetting pressed  bit.
-        PIC_sendEOI(1);
-        return;
-    }
+    else
+        keyboard_status |= (1 << 1);            // Setting PRESSED bit.
 
     keyboard_status |= (1 << 0);            // Setting IRQ_FIRED bit.
-    keyboard_status |= (1 << 1);            // Setting PRESSED bit.
 
     PIC_sendEOI(1);
     inportb(0x60);
