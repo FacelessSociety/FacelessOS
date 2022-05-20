@@ -38,9 +38,9 @@ void _write_str(const char* str, uint16_t x, uint16_t y, uint32_t color) {
     }
 }
 
-void libstring_writestr_xy(uint16_t x, uint16_t y, const char* str) {
+void libstring_writestr_xy(uint16_t x, uint16_t y, const char* str, uint32_t color) {
     for (size_t i = 0; i < _strlen(str); ++i) {
-        libasm_writech_xy(x, y, str[i]);
+        libasm_writech_xy(x, y, str[i], color);
         x += 8;
     }
 }

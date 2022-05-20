@@ -10,5 +10,5 @@ size_t _strlen(const char* const STR);
 uint8_t _strncmp(char* s1, char* s2, uint32_t n);
 void _memzero(void* ptr, size_t n);
 void _write_str(const char* str, uint16_t x, uint16_t y, uint32_t color);
-void libstring_writestr_xy(uint16_t x, uint16_t y, const char* str);
+void libstring_writestr_xy(uint16_t x, uint16_t y, const char* str, uint32_t color);
 #endif

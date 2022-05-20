@@ -39,5 +39,6 @@ libasm_writech_xy:
     mov r15, rdi
     mov r14, rsi
     mov r13, rdx
+    mov r12, rcx
     int 0x80
     retq

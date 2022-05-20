@@ -103,6 +103,7 @@ static void sys_baremetal_writech(void) {
  *  R15: X
  *  R14: Y
  *  R13: Char.
+ *  R12: Color.
  */
 
 
@@ -121,7 +122,7 @@ static void sys_baremetal_writech_xy(void) {
 
     // Write out char.
     char terminated_char[2] = {regs->r13, 0x0};
-    log("%s", -1, terminated_char);
+    kwrite(&canvas, terminated_char, regs->r12);
 
     // Restore position.
     canvas.x = x;

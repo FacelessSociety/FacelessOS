@@ -25,7 +25,7 @@ static void draw_topbar(uint8_t id, BUILTIN_WIN_TYPE type, uint8_t active) {
     switch (type) {
         case BWT_TERMINAL:
             libgfx_draw_square(windows[id].xpos, windows[id].ypos, ICON_WIDTH, ICON_HEIGHT, ICON_BG);
-            libstring_writestr_xy(windows[id].xpos, windows[id].ypos, ">_");
+            libstring_writestr_xy(windows[id].xpos, windows[id].ypos, ">_", 0xFFEA00);
             break;
     }
 }
