@@ -65,6 +65,17 @@ void libwm_create_window(BUILTIN_WIN_TYPE type) {
     draw_topbar(cur_id - 2, type, 0);
 }
 
+void reset_win(uint8_t id) {
+    if (id >= LIBWM_MAX_WINDOWS) return;
+
+    libgfx_draw_square(windows[id].xpos, windows[id].ypos, windows[id].width, windows[id].height, LIBWM_DEFAULT_WIN_COLOR);
+
+    if (cur_id - 1 != id)           // Not active.
+        draw_topbar(id, windows[id].type, 0);
+    else    
+        draw_topbar(id, windows[id].type, 1);         // Active.
+}
+
 
 void libwm_pop_window(void) {
     if (cur_id == 0) return;
