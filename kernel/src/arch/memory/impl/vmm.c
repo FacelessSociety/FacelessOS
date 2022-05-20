@@ -8,8 +8,8 @@
 
 #define PAGE_ADDR_MASK 0x000ffffffffff000
 #define GB 0x40000000UL
-#define KERNEL_RESERVED_START 0x0000000000007000
-#define KERNEL_RESERVED_END 0xB3F4
+#define KERNEL_RESERVED_START 0x0000000000008000
+#define KERNEL_RESERVED_END 0xC4B4
 
 
 __attribute__((aligned(0x1000))) static struct MappingTable {
