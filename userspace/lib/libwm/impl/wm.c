@@ -1,5 +1,6 @@
 #include <lib/libwm/wm.h>
 #include <lib/libwm/window.h>
+#include <lib/libwm/terminal.h>
 #include <lib/baremetal/tty/vtty.h>
 #include <stdint.h>
 
@@ -27,9 +28,20 @@ static void handler(uint16_t scancode) {
         switch (SC_ASCII[scancode]) {
             case 't':
                 libwm_create_window(BWT_TERMINAL);
-                break;
+                return;
             case 'q':
                 libwm_pop_window();
+                return;
+        } 
+    }
+
+    struct Window current = libwm_get_current_window();
+
+    // Interact with current window if active.
+    if (current.active) {
+        switch (current.type) {
+            case BWT_TERMINAL:
+                libwmterm_feed(scancode);
                 break;
         }
     }

@@ -26,11 +26,15 @@ struct Window {
     uint32_t xpos;
     uint32_t ypos;
     BUILTIN_WIN_TYPE type;
+    uint8_t active : 1;
 };
 
 
 void libwm_create_window(BUILTIN_WIN_TYPE type);
 void libwm_pop_window(void);                // Pops a window (destroys) from top.
 void libwm_destroyall(void);
+void libwm_write_inside_win(const char* str, uint32_t color, uint16_t x, uint16_t y, uint8_t winid);
+struct Window libwm_get_current_window(void);
+struct Window libwm_get_win(uint8_t id);
 
 #endif
