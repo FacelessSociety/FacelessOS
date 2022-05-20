@@ -12,7 +12,7 @@
 #include <util/baremetal_style.h>
 
 
-#define SYSCALL_COUNT 16
+#define SYSCALL_COUNT 17
 
 static volatile struct SyscallRegs {
     uint64_t r15;
@@ -96,6 +96,37 @@ static void sys_baremetal_writech(void) {
     CLI;
     char terminated_char[2] = {regs->r15, 0x0};
     log("%s", -1, terminated_char);
+    STI;
+}
+
+/*
+ *  R15: X
+ *  R14: Y
+ *  R13: Char.
+ */
+
+
+static void sys_baremetal_writech_xy(void) {
+    CLI;
+    extern canvas_t canvas;
+
+    // Save old position.
+    uint64_t x, y;
+    x = canvas.x;
+    y = canvas.y;
+
+    // Set new position.
+    canvas.x = regs->r15;
+    canvas.y = regs->r14;
+
+    // Write out char.
+    char terminated_char[2] = {regs->r13, 0x0};
+    log("%s", -1, terminated_char);
+
+    // Restore position.
+    canvas.x = x;
+    canvas.y = y;
+
     STI;
 }
 
@@ -211,7 +242,8 @@ static void(*syscall_table[SYSCALL_COUNT])(void) = {
     sys_get_day,                            // 12.
     sys_spktest,                            // 13.
     list_pci_devices,                       // 14.
-    sys_reboot                              // 15.
+    sys_reboot,                             // 15.
+    sys_baremetal_writech_xy                // 16.
 };
 
 
