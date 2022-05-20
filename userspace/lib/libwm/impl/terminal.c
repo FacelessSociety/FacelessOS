@@ -27,7 +27,7 @@ static const char* const SC_ASCII = "\x00\x1B" "1234567890-=" "\x08"
  */
 
 
-static void sync(void) {
+void libwmterm_sync(void) {
     for (int i = 0; i < LIBWM_MAX_WINDOWS; ++i) {
         if (!(libwm_get_win(i).active)) terminals[i].magic = 0xDEADBEEF;            // Invalidate the terminal.
     }
@@ -84,7 +84,7 @@ void libwmterm_feed(uint16_t scancode) {
     if (terminals[win.id].buffer_idx >= BUFFER_MAX_SZ) return;      // Reject if buffer is full.
 
     // Sync all terminals.
-    sync();
+    libwmterm_sync();
 
     // If magic doesn't match, set everything for this terminal up.
     if (terminals[win.id].magic != TERMINAL_MAGIC) {

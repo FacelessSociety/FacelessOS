@@ -26,6 +26,7 @@ void libwmterm_feed(uint16_t scancode);
  */
 
 void libwmterm_write(const char* str);
+void libwmterm_sync(void);
 struct Terminal libwmterm_get_current_term(void);
 
 #endif

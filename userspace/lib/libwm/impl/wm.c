@@ -44,6 +44,8 @@ static void handler(uint16_t scancode) {
                 libwmterm_feed(scancode);
                 break;
         }
+    } else {
+        libwmterm_sync();
     }
 
     if (scancode == 29 && !(scancode & 0x80)) 
