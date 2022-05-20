@@ -3,6 +3,7 @@
 #include <lib/libpiano/libpiano.h>
 #include <lib/libasm/libasm.h>
 #include <lib/libwm/wm.h>
+#include <lib/libstring/string.h>
 
 // 2022 Ian Moffett <ian@kesscoin.com>
 
@@ -31,7 +32,7 @@ void _shell_exec(struct Command command) {
         case CT_REBOOT:
             __asm__ __volatile__("mov $0xF, %rax; int $0x80");
             break;
-            libwm_create_window();
+            libwm_create_window(BWT_TERMINAL);
         case CT_WM:
             libwm_init();
             break;

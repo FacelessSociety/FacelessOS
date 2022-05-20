@@ -26,7 +26,7 @@ static void handler(uint16_t scancode) {
 
         switch (SC_ASCII[scancode]) {
             case 't':
-                libwm_create_window();
+                libwm_create_window(BWT_TERMINAL);
                 break;
             case 'q':
                 libwm_pop_window();

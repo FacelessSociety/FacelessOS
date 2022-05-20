@@ -13,16 +13,22 @@
 #define LIBWM_MAX_WINDOWS 2
 
 
+typedef enum {
+    BWT_TERMINAL,
+} BUILTIN_WIN_TYPE;
+
+
 struct Window {
     uint8_t id : 2;
     uint16_t width : 12;
     uint16_t height : 12;
     uint32_t xpos;
     uint32_t ypos;
+    BUILTIN_WIN_TYPE type;
 };
 
 
-void libwm_create_window(void);
+void libwm_create_window(BUILTIN_WIN_TYPE type);
 void libwm_pop_window(void);                // Pops a window (destroys) from top.
 void libwm_destroyall(void);
 
