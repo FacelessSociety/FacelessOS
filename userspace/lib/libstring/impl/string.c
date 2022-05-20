@@ -1,4 +1,5 @@
 #include <lib/libstring/string.h>
+#include <lib/libasm/libasm.h>
 
 
 size_t _strlen(const char* const STR) {
@@ -27,5 +28,19 @@ void _memzero(void* ptr, size_t n) {
 
     for (size_t i = 0; i < n; ++i) {
         ptr_char[i] = 0;
+    }
+}
+
+
+
+void _write_str(const char* str, uint16_t x, uint16_t y, uint32_t color) {
+    for (int i = 0; i < _strlen(str); ++i) {
+    }
+}
+
+void libstring_writestr_xy(uint16_t x, uint16_t y, const char* str) {
+    for (size_t i = 0; i < _strlen(str); ++i) {
+        libasm_writech_xy(x, y, str[i]);
+        x += 8;
     }
 }

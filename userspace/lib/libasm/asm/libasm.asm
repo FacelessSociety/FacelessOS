@@ -5,6 +5,7 @@ global libasm_get_dateyear
 global libasm_get_datemonth
 global libasm_get_dateday
 global libasm_pcspkr_toggle
+global libasm_writech_xy
 
 libasm_get_dateyear:
     mov rax, 0xB
@@ -30,5 +31,13 @@ libasm_get_dateday:
 libasm_pcspkr_toggle:
     mov rax, 0xD
     mov r15, 500
+    int 0x80
+    retq
+
+libasm_writech_xy:
+    mov rax, 0x10
+    mov r15, rdi
+    mov r14, rsi
+    mov r13, rdx
     int 0x80
     retq
