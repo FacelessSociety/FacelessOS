@@ -27,6 +27,7 @@ static void handler(uint16_t scancode) {
 
         switch (SC_ASCII[scancode]) {
             case 't':
+                libwmterm_sync();
                 libwm_create_window(BWT_TERMINAL);
                 return;
             case 'q':
@@ -44,8 +45,6 @@ static void handler(uint16_t scancode) {
                 libwmterm_feed(scancode);
                 break;
         }
-    } else {
-        libwmterm_sync();
     }
 
     if (scancode == 29 && !(scancode & 0x80)) 

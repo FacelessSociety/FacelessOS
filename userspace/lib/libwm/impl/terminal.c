@@ -117,6 +117,19 @@ void libwmterm_feed(uint16_t scancode) {
             return; 
     }
 
+    // Check if character is not backspace.
+    if (SC_ASCII[scancode] == '\x08') {
+        if (terminals[win.id].buffer_idx <= 0)
+            // WILL NOT CONTINUE IF BUFFER IS EMPTY.
+            return;
+
+        terminals[win.id].x -= X_INC;           // Go back one.
+        char terminated[2] = {terminals[win.id].buffer[terminals[win.id].buffer_idx - 1], 0x0};         // Same char will be written with same background as terminal to make it look gone.
+        libwm_write_inside_win(terminated, TERMINAL_BG, terminals[win.id].x, terminals[win.id].y, win.id);     // Overwrite last char. 
+        terminals[win.id].buffer[--terminals[win.id].buffer_idx] = '\0';                                        // Pop a char off the buffer.
+        return;
+    }
+
     char terminated[2] = {SC_ASCII[scancode], 0x0};
     libwm_write_inside_win(terminated, TERMINAL_TEXT_BG, terminals[win.id].x, terminals[win.id].y, win.id);
     terminals[win.id].x += X_INC;

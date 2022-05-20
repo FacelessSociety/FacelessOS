@@ -9,7 +9,7 @@
 
 // 2022 Ian Moffett <ian@kesscoin.com>
 
-static uint8_t gui_mode = 0;
+__attribute__((section(".data"))) static uint8_t gui_mode = 0;
 
 
 static void out(const char* str, uint8_t oneline) {

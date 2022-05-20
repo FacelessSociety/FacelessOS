@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 #define TERMINAL_TEXT_BG 0xFFFFFF
+#define TERMINAL_BG 0x808080
 #define BUFFER_MAX_SZ 30
 
 // 2022 Ian Moffett <ian@kesscoin.com>
