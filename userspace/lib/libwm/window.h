@@ -11,6 +11,7 @@
 #define LIBWM_DEFAULT_X 0
 #define LIBWM_DEFAULT_Y 50
 #define LIBWM_MAX_WINDOWS 2
+#define LIBWM_DEFAULT_WIN_COLOR 0x808080
 
 
 typedef enum {

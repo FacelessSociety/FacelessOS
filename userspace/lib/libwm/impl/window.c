@@ -50,7 +50,7 @@ void libwm_create_window(BUILTIN_WIN_TYPE type) {
     }
 
     windows[cur_id++] = newwin;
-    libgfx_draw_square(newwin.xpos, newwin.ypos, newwin.width, newwin.height, 0x808080);
+    libgfx_draw_square(newwin.xpos, newwin.ypos, newwin.width, newwin.height, LIBWM_DEFAULT_WIN_COLOR);
     draw_topbar(cur_id - 1, type, 1);
     draw_topbar(cur_id - 2, type, 0);
 }
